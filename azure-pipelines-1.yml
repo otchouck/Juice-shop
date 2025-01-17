@@ -1,0 +1,34 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+# Étape 1 : Installer Node.js
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Install Node.js'
+
+# Étape 2 : Installer les dépendances et compiler
+- script: |
+    echo "Installing dependencies..."
+    npm install || exit 1
+    echo "Building the project..."
+    npm run build || exit 1
+  displayName: 'Install and Build'
+
+# Étape 3 : Scanner avec Nexus IQ
+- task: NexusIqPipelineTask@2
+  inputs:
+    nexusIqService: 'iq-dev'  # Nom du service Nexus IQ dans Azure DevOps
+    organizationId: 'f2393bc70ea94449b91fbc3956ed8964'
+    applicationId: 'JuiceShop_JoTest'
+    stage: 'Build'
+  displayName: 'Scan Dependencies with Nexus IQ'
