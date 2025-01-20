@@ -16,7 +16,7 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    npm install
+    npm install -g n
     npm run build
 - task: NexusIqPipelineTask@2
   inputs:
