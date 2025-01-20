@@ -29,9 +29,9 @@ jobs:
 
   - task: NexusIqPipelineTask@1
     inputs:
-      nexusIqService: 'NexusIQ-dev'
+      nexusIqService: 'iq-dev'
       organizationId: 'f2393bc70ea94449b91fbc3956ed8964'
-      applicationId: 'juiceshop'
+      applicationId: 'Js1'
       stage: 'Build'
       scanTargets: '**/*.js, **/*.ts, **/*.tgz, **/*.package.json, **/*.package-lock.json, **/*.npm-shrinkwrap.json, **/*.yarn.lock, **/*.pnpm-lock.yaml,'
       ignoreScanningError: true
