@@ -1,27 +1,37 @@
-# Node.js
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+trigger: none
 
-trigger:
-- master
+pool: agents-dev
 
-pool:
-  vmImage: ubuntu-latest
+schedules:
+- cron: '0 12 1 */1 Mon,Tue,Wed,Thu,Fri'
+  displayName: Monthly 7am Build on 1st
+  branches:
+    include:
+    - main
+  always: true
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
+jobs:
+- job: build
+  displayName: Build
+  steps:
+  - task: CmdLine@2
+    displayName: Git Clone
+    inputs:
+      script: |
+        git clone -b v14.2.0 --single-branch https://github.com/juice-shop/juice-shop.git
 
-- script: |
-    npm install -g n
-    npm run build
-- task: NexusIqPipelineTask@2
-  inputs:
-    nexusIqService: 'iq-dev'
-    organizationId: 'f2393bc70ea94449b91fbc3956ed8964'
-    applicationId: 'JuiceShop_JoTest'
-    stage: 'Build'
-  displayName: 'npm install and build'
+  - task: CmdLine@2
+    displayName: Npm Install
+    inputs:
+      script: |
+        cd juice-shop
+        npm install
+
+  - task: NexusIqPipelineTask@1
+    inputs:
+      nexusIqService: 'NexusIQ-dev'
+      organizationId: 'f2393bc70ea94449b91fbc3956ed8964'
+      applicationId: 'juiceshop'
+      stage: 'Build'
+      scanTargets: '**/*.js, **/*.ts, **/*.tgz, **/*.package.json, **/*.package-lock.json, **/*.npm-shrinkwrap.json, **/*.yarn.lock, **/*.pnpm-lock.yaml,'
+      ignoreScanningError: true
