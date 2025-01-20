@@ -2,13 +2,6 @@ trigger: none
 
 pool: agents-dev
 
-schedules:
-- cron: '0 12 1 */1 Mon,Tue,Wed,Thu,Fri'
-  displayName: Monthly 7am Build on 1st
-  branches:
-    include:
-    - main
-  always: true
 
 jobs:
 - job: build
